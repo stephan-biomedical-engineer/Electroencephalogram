@@ -1,0 +1,13 @@
+idf_component_register(
+    SRCS 
+        "app.c"
+        "led.c"
+        "serial.c"
+    INCLUDE_DIRS 
+        "."
+    REQUIRES 
+        driver
+        freertos
+    PRIV_REQUIRES 
+        esp_timer
+)
