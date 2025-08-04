@@ -48,7 +48,7 @@
         "silk_text_thickness": 0.1,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.25
+          "min_clearance": 0.2
         }
       },
       "diff_pair_dimensions": [
@@ -116,7 +116,7 @@
       },
       "rules": {
         "max_error": 0.005,
-        "min_clearance": 0.0,
+        "min_clearance": 0.127,
         "min_connection": 0.0,
         "min_copper_edge_clearance": 0.2,
         "min_hole_clearance": 0.127,
@@ -180,7 +180,13 @@
       "track_widths": [
         0.0,
         0.2,
-        0.4
+        0.275,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.8,
+        1.0
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -223,6 +229,10 @@
         },
         {
           "diameter": 0.4,
+          "drill": 0.3
+        },
+        {
+          "diameter": 0.6,
           "drill": 0.3
         },
         {
@@ -497,7 +507,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "Gerber/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -708,6 +718,14 @@
       "version": 1
     },
     "net_format_name": "",
+    "ngspice": {
+      "fix_include_paths": true,
+      "meta": {
+        "version": 0
+      },
+      "model_mode": 4,
+      "workbook_filename": ""
+    },
     "page_layout_descr_file": "",
     "plot_directory": "",
     "spice_current_sheet_as_root": false,
@@ -723,6 +741,22 @@
     [
       "c1ea4b71-0eae-43de-9c39-0b6c9633ec3d",
       "Root"
+    ],
+    [
+      "26e1ca3a-7a41-4b51-b39a-d3e69376ee8e",
+      "Wireless Circuit"
+    ],
+    [
+      "d28c9a50-3664-4110-b40a-72946b0e58ba",
+      "Analog Front End"
+    ],
+    [
+      "2da506e6-e412-4d09-b87a-94362ab08db5",
+      "Power Supply"
+    ],
+    [
+      "85b7064f-cd5c-4df4-b39f-2fddb222fc60",
+      "External Flash"
     ]
   ],
   "text_variables": {}
