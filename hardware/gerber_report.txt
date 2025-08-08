@@ -1,0 +1,12 @@
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-F_Cu.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-In1_Cu.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-In2_Cu.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-B_Cu.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-F_Paste.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-B_Paste.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-B_Silkscreen.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-F_Mask.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-B_Mask.gbr'.
+Plotted to '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-Edge_Cuts.gbr'.
+Created Gerber job file '/home/stephan/Documents/IB1/EEG_Light/Gerber/eeg-job.gbrjob'.
+Info: Done.

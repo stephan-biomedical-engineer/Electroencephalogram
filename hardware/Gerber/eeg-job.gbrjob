@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "8.0.9-8.0.9-0~ubuntu24.04.1"
     },
-    "CreationDate": "2025-08-03T01:57:11-03:00"
+    "CreationDate": "2025-08-06T19:27:30-03:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -70,6 +70,11 @@
     {
       "Path": "eeg-B_Paste.gbr",
       "FileFunction": "SolderPaste,Bot",
+      "FilePolarity": "Positive"
+    },
+    {
+      "Path": "eeg-F_Silkscreen.gbr",
+      "FileFunction": "Legend,Top",
       "FilePolarity": "Positive"
     },
     {

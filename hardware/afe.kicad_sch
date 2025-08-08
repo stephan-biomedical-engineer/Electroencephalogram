@@ -6618,7 +6618,7 @@
 		(dnp no)
 		(uuid "01fc0271-e06b-4f8c-b65c-aeabfdc9f3bb")
 		(property "Reference" "R23"
-			(at 344.17 203.454 90)
+			(at 344.17 208.026 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6626,7 +6626,7 @@
 			)
 		)
 		(property "Value" "276K"
-			(at 344.17 205.74 90)
+			(at 344.17 210.312 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7771,7 +7771,7 @@
 		(dnp no)
 		(uuid "19ea9c32-c1c6-43d6-8359-19963588ab3a")
 		(property "Reference" "R35"
-			(at 342.9 299.974 90)
+			(at 342.9 297.942 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7779,7 +7779,7 @@
 			)
 		)
 		(property "Value" "276K"
-			(at 342.9 302.26 90)
+			(at 342.9 300.228 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8746,6 +8746,82 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 172.72 294.64 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "30461a28-ee63-4637-8e35-ab58bd3063ec")
+		(property "Reference" "R27"
+			(at 169.164 294.132 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "2.04k"
+			(at 168.148 296.164 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 174.498 294.64 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 172.72 294.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 172.72 294.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Mouser Part Number" "594-MCS04020D9101BE0"
+			(at 172.72 294.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "5a2b3836-7eaa-40b2-8dcb-f6f1d40f7130")
+		)
+		(pin "1"
+			(uuid "710d5351-ebdd-4e09-89c7-44929a57289f")
+		)
+		(instances
+			(project "eeg"
+				(path "/c1ea4b71-0eae-43de-9c39-0b6c9633ec3d/d28c9a50-3664-4110-b40a-72946b0e58ba"
+					(reference "R27")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GNDA")
 		(at 257.81 114.3 0)
 		(unit 1)
@@ -8898,7 +8974,7 @@
 		(dnp no)
 		(uuid "337f3da8-0f25-4fae-81fe-f02cf75a94b5")
 		(property "Reference" "R34"
-			(at 327.66 299.974 90)
+			(at 327.66 297.688 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8906,7 +8982,7 @@
 			)
 		)
 		(property "Value" "149K"
-			(at 327.66 302.26 90)
+			(at 327.66 299.974 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9039,7 +9115,7 @@
 		(dnp no)
 		(uuid "34181884-d56f-49d2-a25b-a6dcbfb8ad9c")
 		(property "Reference" "R33"
-			(at 283.21 297.434 90)
+			(at 288.036 296.164 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9047,7 +9123,7 @@
 			)
 		)
 		(property "Value" "97k"
-			(at 283.21 299.72 90)
+			(at 288.036 298.45 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9201,7 +9277,7 @@
 		(dnp no)
 		(uuid "3735f161-42fb-4dd5-b77d-4fee6ed51fc6")
 		(property "Reference" "R31"
-			(at 246.634 325.12 90)
+			(at 244.602 326.136 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9209,7 +9285,7 @@
 			)
 		)
 		(property "Value" "1.5k"
-			(at 248.92 325.12 90)
+			(at 244.602 323.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9278,7 +9354,7 @@
 		(dnp no)
 		(uuid "3a21562e-f5a5-4b31-a608-caa0292c8055")
 		(property "Reference" "R30"
-			(at 224.028 317.246 90)
+			(at 229.108 313.944 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9287,7 +9363,7 @@
 			)
 		)
 		(property "Value" "750k"
-			(at 223.52 314.96 90)
+			(at 228.6 311.658 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9506,7 +9582,7 @@
 		(dnp no)
 		(uuid "3fd58653-81c0-4552-b710-c54c7f44a4bf")
 		(property "Reference" "R38"
-			(at 461.01 293.37 90)
+			(at 461.01 291.846 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9514,7 +9590,7 @@
 			)
 		)
 		(property "Value" "484k"
-			(at 461.01 295.91 90)
+			(at 461.01 293.878 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9712,7 +9788,7 @@
 		(dnp no)
 		(uuid "415eac02-4288-498a-91cd-e900a215bfcb")
 		(property "Reference" "R20"
-			(at 260.858 223.266 90)
+			(at 265.684 219.456 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9721,7 +9797,7 @@
 			)
 		)
 		(property "Value" "750k"
-			(at 260.35 220.98 90)
+			(at 265.176 217.17 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9868,7 +9944,7 @@
 		(dnp no)
 		(uuid "4daa06d4-1f32-45d4-81b6-00f472d1d699")
 		(property "Reference" "R18"
-			(at 224.028 220.726 90)
+			(at 230.124 217.17 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9877,7 +9953,7 @@
 			)
 		)
 		(property "Value" "750k"
-			(at 223.52 218.44 90)
+			(at 229.616 214.884 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9946,7 +10022,7 @@
 		(dnp no)
 		(uuid "4fb5628b-f3ff-4b36-b203-5265a4950ca1")
 		(property "Reference" "R25"
-			(at 450.342 220.472 90)
+			(at 452.882 223.266 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9955,7 +10031,7 @@
 			)
 		)
 		(property "Value" "1.93M"
-			(at 452.374 225.044 90)
+			(at 447.294 220.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10024,7 +10100,7 @@
 		(dnp no)
 		(uuid "52f127f4-ba6e-40a0-b9dc-dd757135771e")
 		(property "Reference" "R16"
-			(at 213.614 189.23 90)
+			(at 221.234 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10032,7 +10108,7 @@
 			)
 		)
 		(property "Value" "910k"
-			(at 210.82 189.23 90)
+			(at 221.234 186.944 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10101,7 +10177,7 @@
 		(dnp no)
 		(uuid "54f403ed-2d81-4890-b2eb-8c58c16f7baa")
 		(property "Reference" "R22"
-			(at 328.93 203.454 90)
+			(at 328.93 208.28 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10109,7 +10185,7 @@
 			)
 		)
 		(property "Value" "149K"
-			(at 328.93 205.74 90)
+			(at 328.93 210.566 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10560,7 +10636,7 @@
 		(dnp no)
 		(uuid "603c92de-34cb-46ac-924d-b858b8798100")
 		(property "Reference" "R21"
-			(at 284.48 200.914 90)
+			(at 289.56 199.644 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10568,7 +10644,7 @@
 			)
 		)
 		(property "Value" "97k"
-			(at 284.48 203.2 90)
+			(at 289.56 201.93 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10645,7 +10721,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "1M"
 			(at 53.34 105.41 0)
 			(effects
 				(font
@@ -10715,7 +10791,7 @@
 		(dnp no)
 		(uuid "61802d22-b83a-415c-a61d-9cf849e7ee37")
 		(property "Reference" "R19"
-			(at 247.904 228.6 90)
+			(at 246.38 229.616 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10723,7 +10799,7 @@
 			)
 		)
 		(property "Value" "1.5k"
-			(at 250.19 228.6 90)
+			(at 246.38 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11011,7 +11087,7 @@
 		(dnp no)
 		(uuid "6d02e1f2-cc3d-41db-8f38-0991f1c1039c")
 		(property "Reference" "R32"
-			(at 259.588 319.786 90)
+			(at 265.684 316.23 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11020,7 +11096,7 @@
 			)
 		)
 		(property "Value" "750k"
-			(at 259.08 317.5 90)
+			(at 265.176 313.944 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11371,7 +11447,7 @@
 		(dnp no)
 		(uuid "7e43698d-1def-4297-9bb8-8943c5ed65b3")
 		(property "Reference" "R29"
-			(at 211.074 322.58 90)
+			(at 215.646 320.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11379,7 +11455,7 @@
 			)
 		)
 		(property "Value" "1.5k"
-			(at 213.36 322.58 90)
+			(at 215.646 317.754 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11611,7 +11687,7 @@
 		(dnp no)
 		(uuid "88beff5a-a3f8-477f-af28-8cd7a51e159b")
 		(property "Reference" "R36"
-			(at 395.224 314.452 90)
+			(at 391.922 314.198 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11620,7 +11696,7 @@
 			)
 		)
 		(property "Value" "967k"
-			(at 397.51 314.96 90)
+			(at 390.906 311.912 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12532,7 +12608,7 @@
 		(dnp no)
 		(uuid "a4264113-8c64-45cb-8bcb-3545026e5c44")
 		(property "Reference" "R26"
-			(at 462.28 196.85 90)
+			(at 462.28 189.738 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12540,7 +12616,7 @@
 			)
 		)
 		(property "Value" "484k"
-			(at 462.28 199.39 90)
+			(at 462.28 192.278 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13103,15 +13179,15 @@
 		(dnp no)
 		(uuid "b1a64a1f-b11f-4486-8ac5-74cb7fce0df1")
 		(property "Reference" "R3"
-			(at 167.894 100.33 90)
+			(at 165.608 101.6 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "5.26k"
-			(at 170.18 100.33 90)
+		(property "Value" "2.04k"
+			(at 165.608 99.314 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13875,7 +13951,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "1M"
 			(at 53.34 118.11 0)
 			(effects
 				(font
@@ -14082,82 +14158,6 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 172.72 294.64 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d1813bf2-d01d-484c-925b-bd4ed6115991")
-		(property "Reference" "R27"
-			(at 170.434 294.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "5.26k"
-			(at 172.72 294.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 174.498 294.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 172.72 294.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 172.72 294.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Mouser Part Number" "71-CRCW04025K23FKEDC "
-			(at 172.72 294.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "52154905-00f4-4203-8a8e-6e9292a310a4")
-		)
-		(pin "2"
-			(uuid "350c0bf4-fc93-42d8-bd98-0f7fbdada88a")
-		)
-		(instances
-			(project "eeg"
-				(path "/c1ea4b71-0eae-43de-9c39-0b6c9633ec3d/d28c9a50-3664-4110-b40a-72946b0e58ba"
-					(reference "R27")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
 		(at 172.72 198.12 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -14166,15 +14166,15 @@
 		(dnp no)
 		(uuid "d26834bc-cd05-43d0-bb8c-3a1c25b7172f")
 		(property "Reference" "R15"
-			(at 170.434 198.12 90)
+			(at 168.656 199.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "5.26k"
-			(at 172.72 198.12 90)
+		(property "Value" "2.04k"
+			(at 168.656 197.104 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14242,7 +14242,7 @@
 		(dnp no)
 		(uuid "d2e66279-6c5e-4833-b5fe-d03d9589cf9f")
 		(property "Reference" "R37"
-			(at 449.072 316.992 90)
+			(at 451.612 319.532 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14251,7 +14251,7 @@
 			)
 		)
 		(property "Value" "1.93M"
-			(at 451.104 321.564 90)
+			(at 445.77 317.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14397,7 +14397,7 @@
 		(dnp no)
 		(uuid "d4c18377-1f2e-413a-9195-3188252d82f5")
 		(property "Reference" "R17"
-			(at 211.074 226.06 90)
+			(at 209.296 227.076 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14405,7 +14405,7 @@
 			)
 		)
 		(property "Value" "1.5k"
-			(at 213.36 226.06 90)
+			(at 209.296 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14713,7 +14713,7 @@
 		(dnp no)
 		(uuid "e0c3c59a-bdbf-435a-88e8-82400e33b637")
 		(property "Reference" "R24"
-			(at 396.494 217.932 90)
+			(at 391.668 217.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14722,7 +14722,7 @@
 			)
 		)
 		(property "Value" "967k"
-			(at 398.78 218.44 90)
+			(at 392.176 214.884 0)
 			(effects
 				(font
 					(size 1.27 1.27)
