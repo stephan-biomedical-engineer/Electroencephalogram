@@ -5,9 +5,5 @@
  *      Author: stephan
  */
 
-#ifndef HW_UART_H_
-#define HW_UART_H_
+#pragma once
 
-
-
-#endif /* HW_UART_H_ */

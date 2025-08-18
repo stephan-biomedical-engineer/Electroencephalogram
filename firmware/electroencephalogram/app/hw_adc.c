@@ -10,6 +10,11 @@
 #include "hw_adc.h"
 #include "stm32h7xx_hal_adc.h"
 
+#define EEG_CHANNELS        4
+#define EEG_SAMPLE_SIZE     (EEG_CHANNELS * 2)  // 2 bytes por canal (12 bits ADC)
+#define EEG_PACKET_HEADER   4                   // Timestamp (4 bytes)
+#define EEG_PACKET_SIZE     (EEG_PACKET_HEADER + EEG_SAMPLE_SIZE)
+
 // --- Variáveis Globais (definidas aqui, declaradas extern em hw_adc.h) ---
 extern ADC_HandleTypeDef hadc1; // Assume que hadc1 é globalmente definido (geralmente pelo CubeMX)
 
@@ -20,7 +25,7 @@ uint16_t adc_buffer[ADC_DMA_BUFFER_SIZE_SAMPLES];
 // Flag para indicar que novos dados estão disponíveis (usar com cuidado, RTOS seria melhor)
 // Esta flag será setada dentro dos callbacks do DMA.
 volatile uint8_t adc_data_ready = 0; // Usar 'volatile' pois é modificada por uma ISR
-
+uint8_t adc_samples[EEG_SAMPLE_SIZE];
 
 // Implementação interna da configuração do ADC
 static void hw_adc_1_config(void) // Renomeada
@@ -178,13 +183,17 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
   */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-  if(hadc->Instance == ADC1)
-  {
-    // A segunda metade do adc_buffer (índices ADC_DMA_BUFFER_SIZE_SAMPLES/2 a ADC_DMA_BUFFER_SIZE_SAMPLES - 1)
-    // está agora preenchida e pronta para ser processada.
-    // Sinalize aqui para sua lógica de processamento de dados (ex: via semáforo, flag).
-    adc_data_ready = 1;
-  }
+	if(hadc->Instance == ADC1)
+	    {
+	        // Converte as amostras para o formato de 2 bytes por canal
+	        for(int i = 0; i < EEG_CHANNELS; i++)
+	        {
+	            uint16_t sample = adc_buffer[i] & 0xFFF;
+	            adc_samples[i * 2] = sample & 0xFF;
+	            adc_samples[(i * 2) + 1] = (sample >> 8) & 0xFF;
+	        }
+	        adc_data_ready = 1;
+	    }
 }
 
 /**
