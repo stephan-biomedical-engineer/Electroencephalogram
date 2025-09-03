@@ -27,49 +27,67 @@ CBF_DECLARE(uart_rx_cb, RX_CB_SIZE);
 
 static mh_msg_t mcu_msg_in = { 0 } ;
 static mh_msg_t mcu_msg_out = { 0 } ;
-static uint16_t sample_counter = 0;
+//static uint16_t sample_counter = 0;
+static uint32_t timestamp_ms = 0;
+static uint8_t tick_counter = 0;
 extern uint8_t adc_samples[EEG_SAMPLE_SIZE];
 extern volatile uint8_t adc_data_ready;
 extern uint16_t adc_buffer[ADC_DMA_BUFFER_SIZE_SAMPLES];
 
 
-static void app_prepare_eeg_packet(mh_msg_t *msg_out) {
+//static void app_prepare_eeg_packet(mh_msg_t *msg_out) {
+//
+//	if(!adc_data_ready) return;										// Verifica se há novos dados do ADC
+//
+//    mh_init(msg_out);												// Limpa a mensagem anterior
+//
+//    uint32_t timestamp = (uint32_t)sample_counter;
+//
+//    memcpy(msg_out->payload, &timestamp_ms, sizeof(timestamp_ms));			// Monta o payload: [timestamp][dados dos canais]
+//
+//    // Converte as amostras do ADC para o payload (12 bits -> 2 bytes cada)
+//    for(int i = 0; i < EEG_CHANNELS; i++) {
+//        uint16_t sample = adc_buffer[i]; // 16 bits
+//        memcpy(&msg_out->payload[EEG_PACKET_HEADER + (i * 2)], &sample, 2);
+//    }
+//
+//    msg_out->size = EEG_PACKET_SIZE;
+//    sample_counter++;
+//    adc_data_ready = 0;
+//}
 
-	if(!adc_data_ready) return;										// Verifica se há novos dados do ADC
 
-    mh_init(msg_out);												// Limpa a mensagem anterior
+static void app_prepare_eeg_packet(mh_msg_t *msg_out, uint32_t timestamp)
+{
+    mh_init(msg_out);
+    memcpy(msg_out->payload, &timestamp, sizeof(timestamp));
 
-    uint32_t timestamp = (uint32_t)sample_counter;
-
-    memcpy(msg_out->payload, &timestamp, sizeof(uint32_t));			// Monta o payload: [timestamp][dados dos canais]
-
-    // Converte as amostras do ADC para o payload (12 bits -> 2 bytes cada)
     for(int i = 0; i < EEG_CHANNELS; i++) {
-        uint16_t sample = adc_buffer[i]; // 16 bits
+        uint16_t sample = adc_buffer[i];
         memcpy(&msg_out->payload[EEG_PACKET_HEADER + (i * 2)], &sample, 2);
     }
 
     msg_out->size = EEG_PACKET_SIZE;
-    sample_counter++;
-    adc_data_ready = 0;
 }
+
 
 
 static void send_test_packet() {
     mh_msg_t test_msg;
     mh_init(&test_msg);
 
-    uint16_t timestamp = 0xABCD;
+    uint32_t timestamp = 0xABCD1234;
     uint16_t channels[4] = {0x0FFF, 0x0AAA, 0x0555, 0x0000};
 
-    memcpy(test_msg.payload, &timestamp, 2);
-    memcpy(test_msg.payload + 2, channels, 8);
-    test_msg.size = 10;
+    memcpy(test_msg.payload, &timestamp, sizeof(uint32_t));      // 4 bytes
+    memcpy(test_msg.payload + 4, channels, sizeof(channels));    // 8 bytes
+    test_msg.size = 12;
 
     if (mh_encode(&test_msg)) {
         hal_ser_write(DEBUG_SERIAL_DEV, test_msg.payload, test_msg.size);
     }
 }
+
 
 
 static bool app_check_input(cbf_t *cb, mh_msg_t *msg_in)
@@ -130,47 +148,49 @@ static void app_uart_rx_cbk(uint8_t c)
 
 void app_setup(void)
 {
-	hw_adc_init();
 	hw_adc_start_acquisition();
 	hal_ser_init();
 	hal_ser_configure(DEBUG_SERIAL_DEV, 115200, HAL_SER_DATA_SIZE_8,HAL_SER_PARITY_NONE,
 			HAL_SER_STOP_BITS_1, HAL_SER_FLOW_CONTROL_NONE);
 	hal_ser_interrupt_set(DEBUG_SERIAL_DEV, app_uart_rx_cbk);
 	hal_ser_open(DEBUG_SERIAL_DEV);
-	send_test_packet();
 }
 
 void app_loop(void)
 {
-	// 1. Verifica mensagens recebidas
-	    if(app_check_input(&uart_rx_cb, &mcu_msg_in))
-	    {
-	        // Processa mensagem recebida (se necessário)
-	        // ...
-	    }
+    // 1. Verifica mensagens recebidas
+    if(app_check_input(&uart_rx_cb, &mcu_msg_in))
+    {
+        // Processa mensagem recebida (se necessário)
+    }
 
-	    // 2. Prepara e envia dados do EEG
-	    app_prepare_eeg_packet(&mcu_msg_out);
+    // 2. Prepara e envia dados do EEG somente se houver dados novos
+    if (adc_data_ready) {
+        tick_counter++;
+        if (tick_counter >= 4) {   // 4 pacotes = 1 ms
+            tick_counter = 0;
+            timestamp_ms++;
+        }
 
-	    if(mcu_msg_out.size > 0)
-	    {
-	        if(mh_encode(&mcu_msg_out))
-	        {
-	        	/*
-	        	 --------------------------------FOMA DAS MENSAGENS----------------------------------------
-	        	 *
-	        	 TT: Timestamp		C1: Channel1	C2: Channel2	C3:	Channel3	C4: Channel4	CR: CRC
-	        	 *
-	        	 Pré-codificação: TT TT TT TT C1 C1 C2 C2 C3 C3 C4 C4 CR CR
-	        	 *
-	        	 Pós-codificação: [COBS-HEADER] TT TT TT TT C1 C1 C2 C2 C3 C3 C4 C4 CR CR [0x00]
-	        	 *
-	        	 * */
-	            hal_ser_write(DEBUG_SERIAL_DEV, mcu_msg_out.payload, mcu_msg_out.size);
-	            mcu_msg_out.size = 0; // Reset após envio
-	        }
-	    }
+        app_prepare_eeg_packet(&mcu_msg_out, timestamp_ms);
+        adc_data_ready = 0;  // já processou este buffer
 
-	    // Pequeno delay para não sobrecarregar a UART
-	    HAL_Delay(1);
+        if(mh_encode(&mcu_msg_out)) {
+            hal_ser_write(DEBUG_SERIAL_DEV, mcu_msg_out.payload, mcu_msg_out.size);
+            mcu_msg_out.size = 0;
+        }
+    }
 }
+
+
+//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+//{
+//    if(htim->Instance == TIM3) { // seu timer de 4kHz
+//        tick_counter++;
+//        if(tick_counter >= 4) { // 4 ticks = 1ms
+//            tick_counter = 0;
+//            timestamp_ms++;      // incrementa 1 ms
+//            adc_data_ready = 1;  // sinaliza novo pacote
+//        }
+//    }
+//}

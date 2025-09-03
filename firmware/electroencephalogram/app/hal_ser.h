@@ -108,3 +108,5 @@ void hal_ser_interrupt_set(hal_ser_dev_t dev, hal_ser_interrupt_t fun);
 void hal_ser_init(void);
 
 void hal_ser_deinit(void);
+
+void hw_uart_irq(hal_ser_dev_t dev);

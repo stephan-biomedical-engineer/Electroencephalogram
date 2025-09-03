@@ -10,13 +10,13 @@
 #include "hw_adc.h"
 #include "stm32h7xx_hal_adc.h"
 
-#define EEG_CHANNELS        4
-#define EEG_SAMPLE_SIZE     (EEG_CHANNELS * 2)  // 2 bytes por canal (12 bits ADC)
+#define EEG_SAMPLE_SIZE     (EEG_NUM_CHANNELS * 2)  // 2 bytes por canal (12 bits ADC)
 #define EEG_PACKET_HEADER   4                   // Timestamp (4 bytes)
 #define EEG_PACKET_SIZE     (EEG_PACKET_HEADER + EEG_SAMPLE_SIZE)
 
 // --- Variáveis Globais (definidas aqui, declaradas extern em hw_adc.h) ---
 extern ADC_HandleTypeDef hadc1; // Assume que hadc1 é globalmente definido (geralmente pelo CubeMX)
+extern TIM_HandleTypeDef htim3;
 
 // Buffer para armazenar os dados do ADC. Declará-lo como uint16_t é mais eficiente
 // já que o RightBitShift_6 garantirá que os dados caibam em 16 bits.
@@ -33,30 +33,27 @@ static void hw_adc_1_config(void) // Renomeada
   ADC_MultiModeTypeDef multimode = {0};
   ADC_ChannelConfTypeDef sConfig = {0};
 
+
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1; // Mantenho DIV1, assumindo fADC=30MHz do barramento.
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc1.Init.Resolution = ADC_RESOLUTION_16B;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
-  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.NbrOfConversion = EEG_NUM_CHANNELS;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T3_TRGO;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
   hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
-
   hadc1.Init.OversamplingMode = ENABLE;
-  hadc1.Init.Oversampling.Ratio = 64; // Valor literal 64 para ADC1/2 no H730
-  hadc1.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_6; // **CORREÇÃO CRÍTICA AQUI:**
+  hadc1.Init.Oversampling.Ratio = 64;
+  hadc1.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_6;
+  hadc1.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
+  hadc1.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
 
-  // **CORREÇÃO FINAL PARA TriggeredMode:** Use a macro correta
-  hadc1.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER; // Esta é a macro correta baseada nas suas definições,
-                                                                          // que significa "modo contínuo para oversampling"
-
-  hadc1.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE; // OK
 
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
@@ -108,6 +105,38 @@ static void hw_adc_1_config(void) // Renomeada
     Error_Handler();
   }
 }
+
+// Implementação da configuração do TIM3
+static void hw_tim_3_config(void)
+{
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 30-1;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 250-1;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+
 // --- Implementação das Funções de API (Públicas) ---
 
 /**
@@ -118,6 +147,7 @@ static void hw_adc_1_config(void) // Renomeada
 void hw_adc_init(void)
 {
   hw_adc_1_config(); // Chama a função de configuração interna
+  hw_tim_3_config();
 }
 
 /**
@@ -131,6 +161,13 @@ void hw_adc_start_acquisition(void)
   // O buffer é uint16_t, mas HAL_ADC_Start_DMA espera uint32_t*.
   // O typecast é seguro porque ADC_RIGHTBITSHIFT_6 garante que o dado de 16 bits
   // estará corretamente alinhado e sem truncamento no uint16_t do buffer.
+//  hw_adc_init();
+
+  if(HAL_TIM_Base_Start(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
   if (HAL_ADC_Start_DMA(&hadc1, (uint32_t*)adc_buffer, ADC_DMA_BUFFER_SIZE_SAMPLES) != HAL_OK)
   {
     Error_Handler(); // Tratar erro se o DMA não iniciar
@@ -186,7 +223,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 	if(hadc->Instance == ADC1)
 	    {
 	        // Converte as amostras para o formato de 2 bytes por canal
-	        for(int i = 0; i < EEG_CHANNELS; i++)
+	        for(int i = 0; i < EEG_NUM_CHANNELS; i++)
 	        {
 	            uint16_t sample = adc_buffer[i] & 0xFFF;
 	            adc_samples[i * 2] = sample & 0xFF;

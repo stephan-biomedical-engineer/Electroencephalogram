@@ -12,11 +12,13 @@
 #include <stdbool.h>
 #include "cobs.h"
 
-#define MAX_EEG_CHANNELS 8
-#define BYTES_PER_CHANNEL 2
+#define EEG_HEADER_SIZE      4   // timestamp em 32 bits
+#define EEG_CHANNELS_MAX     8
+#define EEG_BYTES_PER_CH     2
 
-// Tamanho máximo do payload em bytes
-#define EEG_PAYLOAD_MAX_SIZE (MAX_EEG_CHANNELS * BYTES_PER_CHANNEL)
+
+#define EEG_PAYLOAD_MAX_SIZE (EEG_HEADER_SIZE + (EEG_CHANNELS_MAX * EEG_BYTES_PER_CH))
+
 
 // Buffer máximo para payload + CRC + overhead do COBS
 #define MH_MAX_UTIL_BUFFER_SIZE EEG_PAYLOAD_MAX_SIZE
