@@ -14,10 +14,13 @@ class SerialHandler : public QObject
 public:
     explicit SerialHandler(QObject *parent = nullptr);
     ~SerialHandler();
+    bool isOpen() const;
 
 public slots:
     // Slot para abrir a porta serial com o nome e baud rate
     void openSerialPort(const QString &portName, qint32 baudRate);
+    
+    void write(const QByteArray &data);
     
     // Slot para fechar a porta
     void closeSerialPort();
@@ -29,7 +32,7 @@ signals:
     // Sinal para informar o estado da conexão
     void portStatusChanged(bool isOpen);
     
-    void eegPacketReady(quint16 timestamp, const QList<quint16>& channels);
+        void eegPacketReady(quint32 timestamp, const QList<quint16>& channels);
 
 private slots:
     // Slot interno para ser chamado quando há dados disponíveis na porta serial

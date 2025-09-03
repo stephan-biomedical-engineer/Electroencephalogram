@@ -18,7 +18,8 @@ public:
 
 private slots:
     void on_connectButton_clicked();
-    void onEegPacketReady(quint16 timestamp, const QList<quint16>& channels);
+    void onEegPacketReady(quint32 timestamp, const QList<quint16>& channels);
+    void onPortStatusChanged(bool isOpen);
     
 private:
     QCustomPlot *m_customPlot; // Substitua o QTextEdit

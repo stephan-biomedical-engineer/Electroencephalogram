@@ -52,13 +52,64 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_connectButton_clicked()
 {
-    m_serialHandler->openSerialPort("/dev/ttyUSB0", 115200);
+    m_serialHandler->openSerialPort("/dev/ttyACM0", 921600);
 }
 
-void MainWindow::onEegPacketReady(quint16 timestamp, const QList<quint16>& channels)
+// void MainWindow::onEegPacketReady(quint16 timestamp, const QList<quint16>& channels)
+// {
+//     // Adiciona os novos dados aos vetores de dados
+//     double timestamp_double = static_cast<double>(timestamp);
+    
+//     m_timestamps.append(timestamp_double);
+
+//     for (int i = 0; i < 4; ++i) {
+//         m_channelData[i].append(static_cast<double>(channels[i]));
+//     }
+    
+//     // Configura o eixo X para que mostre apenas a última parte dos dados
+//     // Isso cria o efeito de "rolagem" do gráfico
+//     int maxDataPoints = 1000; // Por exemplo, mostre os últimos 1000 pontos
+//     if (m_timestamps.size() > maxDataPoints) {
+//         m_timestamps.remove(0, m_timestamps.size() - maxDataPoints);
+//         for (int i = 0; i < 4; ++i) {
+//             m_channelData[i].remove(0, m_channelData[i].size() - maxDataPoints);
+//         }
+//     }
+    
+//     // Atualiza os dados de cada gráfico
+//     for (int i = 0; i < 4; ++i) {
+//         m_customPlot->graph(i)->setData(m_timestamps, m_channelData[i]);
+//     }
+
+//     // Auto-escalar os eixos X e Y para se ajustarem aos novos dados
+//     m_customPlot->rescaleAxes();
+    
+//     // Redesenhar o gráfico para mostrar as mudanças
+//     m_customPlot->replot();
+// }
+
+void MainWindow::onPortStatusChanged(bool isOpen) {
+    if (isOpen) {
+        m_connectButton->setText("Parar");
+        // Enviar o comando de START assim que a porta abrir
+        QByteArray startCommand;
+        startCommand.append(0x01); // CMD_START_ACQUISITION
+        m_serialHandler->write(startCommand);
+    } else {
+        m_connectButton->setText("Conectar");
+        // Não precisamos enviar um comando de STOP aqui,
+        // pois a placa para de enviar dados por conta própria.
+        // Apenas o comando START que a ativa.
+    }
+}
+
+void MainWindow::onEegPacketReady(quint32 timestamp, const QList<quint16>& channels)
 {
     // Adiciona os novos dados aos vetores de dados
     double timestamp_double = static_cast<double>(timestamp);
+    
+    // Assegura que o número de pontos não cresça indefinidamente
+    int maxDataPoints = 1000;
     
     m_timestamps.append(timestamp_double);
 
@@ -66,9 +117,7 @@ void MainWindow::onEegPacketReady(quint16 timestamp, const QList<quint16>& chann
         m_channelData[i].append(static_cast<double>(channels[i]));
     }
     
-    // Configura o eixo X para que mostre apenas a última parte dos dados
-    // Isso cria o efeito de "rolagem" do gráfico
-    int maxDataPoints = 1000; // Por exemplo, mostre os últimos 1000 pontos
+    // Remove os pontos mais antigos
     if (m_timestamps.size() > maxDataPoints) {
         m_timestamps.remove(0, m_timestamps.size() - maxDataPoints);
         for (int i = 0; i < 4; ++i) {
@@ -81,9 +130,17 @@ void MainWindow::onEegPacketReady(quint16 timestamp, const QList<quint16>& chann
         m_customPlot->graph(i)->setData(m_timestamps, m_channelData[i]);
     }
 
-    // Auto-escalar os eixos X e Y para se ajustarem aos novos dados
-    m_customPlot->rescaleAxes();
-    
+    // Configura o eixo Y para um range fixo de 0 a 4095
+    // Adiciona um pequeno buffer (50) para que as linhas não fiquem coladas nas bordas
+    m_customPlot->yAxis->setRange(-1000, 66000);
+
+    // Ajusta o eixo X para que ele se mova com os dados
+    if (!m_timestamps.isEmpty()) {
+        double x_start = m_timestamps.first();
+        double x_end = m_timestamps.last();
+        m_customPlot->xAxis->setRange(x_start, x_end);
+    }
+
     // Redesenhar o gráfico para mostrar as mudanças
     m_customPlot->replot();
 }
