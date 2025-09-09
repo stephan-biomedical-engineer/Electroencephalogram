@@ -12,6 +12,7 @@
 #include "cbf.h"
 #include "mh.h"
 #include "hw_adc.h"
+#include "hal_uart_dma.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -28,66 +29,57 @@ CBF_DECLARE(uart_rx_cb, RX_CB_SIZE);
 static mh_msg_t mcu_msg_in = { 0 } ;
 static mh_msg_t mcu_msg_out = { 0 } ;
 //static uint16_t sample_counter = 0;
-static uint32_t timestamp_ms = 0;
-static uint8_t tick_counter = 0;
 extern uint8_t adc_samples[EEG_SAMPLE_SIZE];
-extern volatile uint8_t adc_data_ready;
 extern uint16_t adc_buffer[ADC_DMA_BUFFER_SIZE_SAMPLES];
 
 
-//static void app_prepare_eeg_packet(mh_msg_t *msg_out) {
-//
-//	if(!adc_data_ready) return;										// Verifica se há novos dados do ADC
-//
-//    mh_init(msg_out);												// Limpa a mensagem anterior
-//
-//    uint32_t timestamp = (uint32_t)sample_counter;
-//
-//    memcpy(msg_out->payload, &timestamp_ms, sizeof(timestamp_ms));			// Monta o payload: [timestamp][dados dos canais]
-//
-//    // Converte as amostras do ADC para o payload (12 bits -> 2 bytes cada)
-//    for(int i = 0; i < EEG_CHANNELS; i++) {
-//        uint16_t sample = adc_buffer[i]; // 16 bits
-//        memcpy(&msg_out->payload[EEG_PACKET_HEADER + (i * 2)], &sample, 2);
-//    }
-//
-//    msg_out->size = EEG_PACKET_SIZE;
-//    sample_counter++;
-//    adc_data_ready = 0;
-//}
+static uint64_t timestamp_ms64 = 0;
+static uint32_t last_cycles = 0;
 
-
-static void app_prepare_eeg_packet(mh_msg_t *msg_out, uint32_t timestamp)
+void update_timestamp(void)
 {
-    mh_init(msg_out);
-    memcpy(msg_out->payload, &timestamp, sizeof(timestamp));
+    uint32_t now = DWT->CYCCNT;
+    uint32_t diff = now - last_cycles; // lida com overflow automático
+    last_cycles = now;
 
-    for(int i = 0; i < EEG_CHANNELS; i++) {
-        uint16_t sample = adc_buffer[i];
-        memcpy(&msg_out->payload[EEG_PACKET_HEADER + (i * 2)], &sample, 2);
-    }
+    // converte ciclos para ms acumulando em um contador de 64 bits
+    timestamp_ms64 += diff / (SystemCoreClock / 1000U);
+}
 
-    msg_out->size = EEG_PACKET_SIZE;
+uint32_t get_timestamp_ms(void)
+{
+    return (uint32_t)timestamp_ms64; // ou usa full 64 bits se quiser
 }
 
 
+void process_adc_chunk(uint16_t *buf, int offset, int len)
+{
+    for (int i = 0; i < len; i += EEG_CHANNELS) {
+        mh_init(&mcu_msg_out);
 
-static void send_test_packet() {
-    mh_msg_t test_msg;
-    mh_init(&test_msg);
+        // --- Timestamp em milissegundos ---
+//        uint32_t timestamp_ms = DWT->CYCCNT / (SystemCoreClock / 1000U);
+        update_timestamp();
+        uint32_t timestamp_ms = get_timestamp_ms();
+        memcpy(mcu_msg_out.payload, &timestamp_ms, sizeof(timestamp_ms));
 
-    uint32_t timestamp = 0xABCD1234;
-    uint16_t channels[4] = {0x0FFF, 0x0AAA, 0x0555, 0x0000};
+        // 4 canais = 8 bytes
+        memcpy(&mcu_msg_out.payload[EEG_PACKET_HEADER],
+               &buf[offset + i], EEG_SAMPLE_SIZE);
 
-    memcpy(test_msg.payload, &timestamp, sizeof(uint32_t));      // 4 bytes
-    memcpy(test_msg.payload + 4, channels, sizeof(channels));    // 8 bytes
-    test_msg.size = 12;
+        mcu_msg_out.size = EEG_PACKET_SIZE;
 
-    if (mh_encode(&test_msg)) {
-        hal_ser_write(DEBUG_SERIAL_DEV, test_msg.payload, test_msg.size);
+//        if (mh_encode(&mcu_msg_out)) {
+//            usart_dma_start_tx_h7(mcu_msg_out.payload, mcu_msg_out.size);
+//            mcu_msg_out.size = 0;
+//        }
+        if (mh_encode(&mcu_msg_out))
+        {
+            usart_dma_enqueue_tx(mcu_msg_out.payload, mcu_msg_out.size);
+            mcu_msg_out.size = 0;
+        }
     }
 }
-
 
 
 static bool app_check_input(cbf_t *cb, mh_msg_t *msg_in)
@@ -145,15 +137,33 @@ static void app_uart_rx_cbk(uint8_t c)
         alert_printed = false;
 }
 
+static void uart_tx_complete_cb(int dev)
+{
+    (void)dev; // se não for usar o índice
+    // Aqui você pode acender um LED de debug, ou sinalizar que buffer está livre
+}
 
 void app_setup(void)
 {
-	hw_adc_start_acquisition();
-	hal_ser_init();
-	hal_ser_configure(DEBUG_SERIAL_DEV, 115200, HAL_SER_DATA_SIZE_8,HAL_SER_PARITY_NONE,
-			HAL_SER_STOP_BITS_1, HAL_SER_FLOW_CONTROL_NONE);
-	hal_ser_interrupt_set(DEBUG_SERIAL_DEV, app_uart_rx_cbk);
-	hal_ser_open(DEBUG_SERIAL_DEV);
+    hw_adc_start_acquisition();
+
+    // Inicializa UART pelo HAL normal (pinos, clock etc.)
+    hal_ser_init();
+    hal_ser_configure(DEBUG_SERIAL_DEV, 921600,
+                      HAL_SER_DATA_SIZE_8, HAL_SER_PARITY_NONE,
+                      HAL_SER_STOP_BITS_1, HAL_SER_FLOW_CONTROL_NONE);
+    hal_ser_interrupt_set(DEBUG_SERIAL_DEV, app_uart_rx_cbk);
+    hal_ser_open(DEBUG_SERIAL_DEV);
+
+    // Inicializa DMA para UART
+    usart_dma_init_h7();
+    usart_dma_register_callback_h7(1, uart_tx_complete_cb);
+
+    // --- Habilitar contador de ciclos (DWT) ---
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+    DWT->CYCCNT = 0;                          // zera contador
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;      // habilita contador
+
 }
 
 void app_loop(void)
@@ -165,32 +175,7 @@ void app_loop(void)
     }
 
     // 2. Prepara e envia dados do EEG somente se houver dados novos
-    if (adc_data_ready) {
-        tick_counter++;
-        if (tick_counter >= 4) {   // 4 pacotes = 1 ms
-            tick_counter = 0;
-            timestamp_ms++;
-        }
 
-        app_prepare_eeg_packet(&mcu_msg_out, timestamp_ms);
-        adc_data_ready = 0;  // já processou este buffer
-
-        if(mh_encode(&mcu_msg_out)) {
-            hal_ser_write(DEBUG_SERIAL_DEV, mcu_msg_out.payload, mcu_msg_out.size);
-            mcu_msg_out.size = 0;
-        }
-    }
 }
 
 
-//void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-//{
-//    if(htim->Instance == TIM3) { // seu timer de 4kHz
-//        tick_counter++;
-//        if(tick_counter >= 4) { // 4 ticks = 1ms
-//            tick_counter = 0;
-//            timestamp_ms++;      // incrementa 1 ms
-//            adc_data_ready = 1;  // sinaliza novo pacote
-//        }
-//    }
-//}

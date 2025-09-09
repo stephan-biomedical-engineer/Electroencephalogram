@@ -5,13 +5,6 @@
  *      Author: stephan
  */
 
-/*
- * hal_uart_dma.c
- *
- *  Created on: Sep 3, 2025
- *      Author: stephan
- */
-
 #include "stm32h7xx.h"
 #include "stm32h7xx_ll_bus.h"
 #include "stm32h7xx_ll_dma.h"
@@ -116,24 +109,6 @@ void usart_dma_stop_tx_h7(void)
     LL_USART_DisableDMAReq_TX(TX_USART);
 }
 
-// IRQ Handler do TX_DMA_STREAM configurado (DMA1 Stream1)
-// hal_uart_dma.c
-//void usart_dma_irq_handler_h7(void)
-//{
-//    // Transfer Complete
-//    if (LL_DMA_IsActiveFlag_TC1(TX_DMA)) {
-//        LL_DMA_ClearFlag_TC1(TX_DMA);
-//        if (dma_completion_cb[1]) {
-//            dma_completion_cb ;  // chama callback registrado
-//        }
-//    }
-//
-//    // Transfer Error
-//    if (LL_DMA_IsActiveFlag_TE1(TX_DMA)) {
-//        LL_DMA_ClearFlag_TE1(TX_DMA);
-//        // TODO: tratar erro se necessário
-//    }
-//}
 
 void usart_dma_irq_handler_h7(void)
 {

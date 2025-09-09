@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include "main.h"
+#include "app.h"
 #include "hw_adc.h"
 #include "stm32h7xx_hal_adc.h"
 
@@ -34,17 +35,37 @@ static void hw_adc_1_config(void) // Renomeada
   ADC_ChannelConfTypeDef sConfig = {0};
 
 
+//  hadc1.Instance = ADC1;
+//  hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
+//  hadc1.Init.Resolution = ADC_RESOLUTION_16B;
+//  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
+//  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+//  hadc1.Init.LowPowerAutoWait = DISABLE;
+//  hadc1.Init.ContinuousConvMode = DISABLE;
+//  hadc1.Init.NbrOfConversion = EEG_NUM_CHANNELS;
+//  hadc1.Init.DiscontinuousConvMode = DISABLE;
+//  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T3_TRGO;
+//  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+//  hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
+//  hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+//  hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
+//  hadc1.Init.OversamplingMode = ENABLE;
+//  hadc1.Init.Oversampling.Ratio = 64;
+//  hadc1.Init.Oversampling.RightBitShift = ADC_RIGHTBITSHIFT_6;
+//  hadc1.Init.Oversampling.TriggeredMode = ADC_TRIGGEREDMODE_SINGLE_TRIGGER;
+//  hadc1.Init.Oversampling.OversamplingStopReset = ADC_REGOVERSAMPLING_CONTINUED_MODE;
+
   hadc1.Instance = ADC1;
   hadc1.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV1;
   hadc1.Init.Resolution = ADC_RESOLUTION_16B;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.NbrOfConversion = EEG_NUM_CHANNELS;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIG_T3_TRGO;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
   hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DMA_CIRCULAR;
   hadc1.Init.Overrun = ADC_OVR_DATA_PRESERVED;
   hadc1.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
@@ -161,7 +182,7 @@ void hw_adc_start_acquisition(void)
   // O buffer é uint16_t, mas HAL_ADC_Start_DMA espera uint32_t*.
   // O typecast é seguro porque ADC_RIGHTBITSHIFT_6 garante que o dado de 16 bits
   // estará corretamente alinhado e sem truncamento no uint16_t do buffer.
-//  hw_adc_init();
+  hw_adc_init();
 
   if(HAL_TIM_Base_Start(&htim3) != HAL_OK)
   {
@@ -189,49 +210,18 @@ void hw_adc_stop_acquisition(void)
 
 // --- Implementação das Funções Estáticas (Internas do Módulo) ---
 
-/**
-  * @brief  Configura os parâmetros do ADC1 para o projeto de EEG.
-  * Esta função é chamada uma única vez por hw_adc_init().
-  * @retval None
-  */
-
-// --- Implementação dos Callbacks do HAL ADC (Geralmente em stm32h7xx_it.c, mas aqui para exemplo) ---
-
-/**
-  * @brief  Callback de conclusão de metade da transferência DMA do ADC.
-  * @param  hadc Ponteiro para o handle do ADC.
-  * @retval None
-  */
+// Exemplo: buffer de 1024 amostras, 4 canais
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
 {
-  if(hadc->Instance == ADC1)
-  {
-    // A primeira metade do adc_buffer (índices 0 a ADC_DMA_BUFFER_SIZE_SAMPLES/2 - 1)
-    // está agora preenchida e pronta para ser processada.
-    // Sinalize aqui para sua lógica de processamento de dados (ex: via semáforo, flag).
-    adc_data_ready = 1;
-  }
+    process_adc_chunk(adc_buffer, 0, ADC_DMA_BUFFER_SIZE_SAMPLES / 2);
 }
 
-/**
-  * @brief  Callback de conclusão de transferência DMA completa do ADC.
-  * @param  hadc Ponteiro para o handle do ADC.
-  * @retval None
-  */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-	if(hadc->Instance == ADC1)
-	    {
-	        // Converte as amostras para o formato de 2 bytes por canal
-	        for(int i = 0; i < EEG_NUM_CHANNELS; i++)
-	        {
-	            uint16_t sample = adc_buffer[i] & 0xFFF;
-	            adc_samples[i * 2] = sample & 0xFF;
-	            adc_samples[(i * 2) + 1] = (sample >> 8) & 0xFF;
-	        }
-	        adc_data_ready = 1;
-	    }
+    process_adc_chunk(adc_buffer, ADC_DMA_BUFFER_SIZE_SAMPLES / 2,
+                      ADC_DMA_BUFFER_SIZE_SAMPLES / 2);
 }
+
 
 /**
   * @brief  Callback de erro do ADC.
