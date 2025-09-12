@@ -7,7 +7,7 @@ import plotly.io as pio
 
 
 # Path to the EEG data file
-data_file = os.path.join(os.path.dirname(__file__), '../eeg_data/eeg_data_2025-09-08_21-25-47.txt')
+data_file = os.path.join(os.path.dirname(__file__), '../eeg_data/eeg_data_2025-09-11_15-22-37.txt')
 
 # Read EEG data (assuming tab or comma separated, channels in columns)
 def read_eeg_data(filepath):
@@ -114,14 +114,30 @@ def print_top_frequencies(data, fs=256, top_n=5):
             print(f"  {freqs[idx]:.2f} Hz (amplitude: {fft_vals[idx]:.2f})")
         print()
 
+
+def lowpass_filter(data, fs, cutoff=45.0, order=4):
+    """
+    Filtro passa-baixa Butterworth.
+    
+    data: numpy array (amostras x canais)
+    fs: taxa de amostragem (Hz)
+    cutoff: frequência de corte (Hz)
+    order: ordem do filtro
+    """
+    nyq = 0.5 * fs  # frequência de Nyquist
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    return filtfilt(b, a, data, axis=0)
+
+
 def main():
     data = read_eeg_data(data_file)
-    fs = 256  # Change this if your sampling rate is different
+    fs = 256  # taxa de amostragem
 
-    # Exclude the first column (timestamp), keep only EEG channels
+    # Mantém apenas os canais EEG (remove timestamp)
     eeg_channels = data[:, 1:]
 
-    # Ignore early acquisitions: skip the first N samples (e.g., first 10 seconds)
+    # Ignora os primeiros 10s
     skip_seconds = 10
     skip_samples = int(skip_seconds * fs)
     if eeg_channels.shape[0] > skip_samples:
@@ -131,13 +147,18 @@ def main():
         print("Warning: Not enough samples to skip early acquisitions.")
     print(f"Data shape: {eeg_channels.shape} (samples, channels)")
 
+    # === Aplica o filtro passa-baixa em 45 Hz ===
+    eeg_filtered = lowpass_filter(eeg_channels, fs, cutoff=30.0, order=4)
+
     save_dir = os.path.join(os.path.dirname(__file__), 'images')
     os.makedirs(save_dir, exist_ok=True)
 
-    plot_time_domain(eeg_channels, fs, save_dir=save_dir)
-    eeg_channels_zero_mean = eeg_channels - np.mean(eeg_channels, axis=0)
-    plot_frequency_domain(eeg_channels_zero_mean, fs, save_dir=save_dir)
-    print_top_frequencies(eeg_channels_zero_mean, fs)
+    # Plots no domínio do tempo e frequência do sinal filtrado
+    plot_time_domain(eeg_filtered, fs, save_dir=save_dir)
+    eeg_filtered_zero_mean = eeg_filtered - np.mean(eeg_filtered, axis=0)
+    plot_frequency_domain(eeg_filtered_zero_mean, fs, save_dir=save_dir)
+    print_top_frequencies(eeg_filtered_zero_mean, fs)
+
 
 if __name__ == '__main__':
     main()

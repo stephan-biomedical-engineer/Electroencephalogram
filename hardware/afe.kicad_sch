@@ -5128,7 +5128,7 @@
 		)
 		(uuid "0952e6ac-b543-48df-a9aa-9d8809ec8e18")
 	)
-	(text "1 + RF/RG = 250\n\nRG = 3k\nRF = 750k\n\n"
+	(text "1 + RF/RG = 30\n"
 		(exclude_from_sim no)
 		(at 261.366 134.112 0)
 		(effects
@@ -5169,6 +5169,16 @@
 			)
 		)
 		(uuid "29ef842b-bbc3-47b9-91de-75db1f486200")
+	)
+	(text "Já está com 1M, e está correto"
+		(exclude_from_sim no)
+		(at 469.392 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "33e147bc-4a90-4640-8a14-8f914e3cd0bb")
 	)
 	(text "Gain = 10\nRG = 100k/(Gain - 1) = 11.111k"
 		(exclude_from_sim no)
@@ -5214,6 +5224,16 @@
 		)
 		(uuid "4a4ebb60-2c9c-4fa3-a82a-178fa8bd6a70")
 	)
+	(text "Verificar se pode 270nF\n"
+		(exclude_from_sim no)
+		(at 432.562 102.87 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "535b139c-8ad0-4cef-9d7a-527719be4bc1")
+	)
 	(text "High-Pass Filter \n\nfc = 1/2πRC"
 		(exclude_from_sim no)
 		(at 200.406 71.882 0)
@@ -5233,6 +5253,16 @@
 			)
 		)
 		(uuid "61ca11ae-19ff-4fbe-a7fe-180ca0f343d1")
+	)
+	(text "Trocar para 10nF\n"
+		(exclude_from_sim no)
+		(at 369.824 92.71 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "651eb221-40d7-462d-a0d0-34bb27034108")
 	)
 	(text "Gain = 20\nRG = 100k/(Gain - 1) = 5.263k"
 		(exclude_from_sim no)
@@ -5276,8 +5306,8 @@
 		)
 		(uuid "7e4e6f51-306f-4ad2-9abe-d3cee1063718")
 	)
-	(text "1 + RF/RG = 250\n\nRG = 3k\nRF = 750k\n\n"
-		(exclude_from_sim no)
+	(text "1 + RF/RG = 20"
+		(exclude_from_sim yes)
 		(at 223.266 131.572 0)
 		(effects
 			(font
@@ -5368,6 +5398,16 @@
 		)
 		(uuid "c3f93481-823e-4ba2-a7be-3c453e05262b")
 	)
+	(text "Trocar para 10nF\n"
+		(exclude_from_sim no)
+		(at 340.614 122.682 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "cb5c8bc9-e4e1-4c29-86c4-8ab371e41876")
+	)
 	(text "1 + RF/RG = 250\n\nRG = 3k\nRF = 750k\n\n"
 		(exclude_from_sim no)
 		(at 225.806 326.136 0)
@@ -5377,6 +5417,26 @@
 			)
 		)
 		(uuid "d0a07474-bebb-4510-af5b-5cebe3677f71")
+	)
+	(text "Trocar para 680nF"
+		(exclude_from_sim no)
+		(at 447.04 118.11 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "db4bcd61-6112-4982-85ee-dcccb92820de")
+	)
+	(text "Trocar para 620k\n"
+		(exclude_from_sim no)
+		(at 344.17 102.87 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "dd600631-11fe-49aa-8abc-2631f335bb7b")
 	)
 	(text "1 + RF/RG = 250\n\nRG = 3k\nRF = 750k\n\n"
 		(exclude_from_sim no)
@@ -7930,7 +7990,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5k"
+		(property "Value" "33k"
 			(at 248.92 130.81 90)
 			(effects
 				(font
@@ -8299,8 +8359,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "750k"
-			(at 220.98 120.65 90)
+		(property "Value" "1M"
+			(at 221.996 120.65 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10566,8 +10626,8 @@
 				(justify right)
 			)
 		)
-		(property "Value" "750k"
-			(at 259.08 123.19 90)
+		(property "Value" "1M"
+			(at 260.096 123.19 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13032,7 +13092,7 @@
 				)
 			)
 		)
-		(property "Value" "1.5k"
+		(property "Value" "52k"
 			(at 210.82 128.27 90)
 			(effects
 				(font
