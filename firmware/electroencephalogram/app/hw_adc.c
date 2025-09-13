@@ -69,7 +69,7 @@ static void hw_adc_1_config(void) // Renomeada
   }
 
   // Configuração dos canais (todos com o mesmo SamplingTime)
-  sConfig.SamplingTime = ADC_SAMPLETIME_32CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_16CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
