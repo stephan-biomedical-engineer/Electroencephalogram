@@ -34,7 +34,7 @@ struct qt_meta_stringdata_MainWindow_t {
     char stringdata1[25];
     char stringdata2[1];
     char stringdata3[17];
-    char stringdata4[10];
+    char stringdata4[13];
     char stringdata5[15];
     char stringdata6[9];
     char stringdata7[20];
@@ -48,17 +48,17 @@ Q_CONSTINIT static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_Main
         QT_MOC_LITERAL(11, 24),  // "on_connectButton_clicked"
         QT_MOC_LITERAL(36, 0),  // ""
         QT_MOC_LITERAL(37, 16),  // "onEegPacketReady"
-        QT_MOC_LITERAL(54, 9),  // "timestamp"
-        QT_MOC_LITERAL(64, 14),  // "QList<quint16>"
-        QT_MOC_LITERAL(79, 8),  // "channels"
-        QT_MOC_LITERAL(88, 19),  // "onPortStatusChanged"
-        QT_MOC_LITERAL(108, 6)   // "isOpen"
+        QT_MOC_LITERAL(54, 12),  // "sample_count"
+        QT_MOC_LITERAL(67, 14),  // "QList<quint16>"
+        QT_MOC_LITERAL(82, 8),  // "channels"
+        QT_MOC_LITERAL(91, 19),  // "onPortStatusChanged"
+        QT_MOC_LITERAL(111, 6)   // "isOpen"
     },
     "MainWindow",
     "on_connectButton_clicked",
     "",
     "onEegPacketReady",
-    "timestamp",
+    "sample_count",
     "QList<quint16>",
     "channels",
     "onPortStatusChanged",

@@ -7,7 +7,9 @@ import plotly.io as pio
 
 
 # Path to the EEG data file
-data_file = os.path.join(os.path.dirname(__file__), '../eeg_data/eeg_data_2025-09-11_15-22-37.txt')
+print("File name: ",end='')
+data_name = input()
+data_file = os.path.join(os.path.dirname(__file__), f'../eeg_data/{data_name}')
 
 # Read EEG data (assuming tab or comma separated, channels in columns)
 def read_eeg_data(filepath):
@@ -19,57 +21,71 @@ def read_eeg_data(filepath):
         data = np.loadtxt(f, delimiter=delimiter, skiprows=1)
     return data
 
-def plot_time_domain(data, fs=256, save_dir=None):
+def plot_time_domain(data, timestamps=None, fs=4000, save_dir=None, dt_str=""):
     for ch in range(data.shape[1]):
-        t = np.arange(data.shape[0]) / fs
+        if timestamps is not None:
+            t = timestamps
+        else:
+            t = np.arange(data.shape[0]) / fs
+        
         plt.figure(figsize=(10, 4))
         plt.plot(t, data[:, ch], label=f'Channel {ch+1}')
         plt.title(f'EEG Signal Amplitude (Time Domain) - Channel {ch+1}')
         plt.xlabel('Time (s)')
-        plt.ylabel('Amplitude')
+        plt.ylabel('Amplitude (ADC units)')
+        plt.ylim(0, 65535)  # ← FIXO DE 0 A 65535
         plt.legend()
         plt.tight_layout()
         if save_dir:
-            png_path = os.path.join(save_dir, f'time_domain_ch{ch+1}.png')
+            png_path = os.path.join(save_dir, f'time_domain_{dt_str}_ch{ch+1}.png')
             plt.savefig(png_path)
         plt.close()
 
-        # Plotly HTML
+        # Plotly HTML também com eixo Y fixo
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=t, y=data[:, ch], mode='lines', name=f'Channel {ch+1}'))
         fig.update_layout(title=f'EEG Signal Amplitude (Time Domain) - Channel {ch+1}',
-                          xaxis_title='Time (s)', yaxis_title='Amplitude')
+                          xaxis_title='Time (s)', yaxis_title='Amplitude (ADC units)',
+                          yaxis_range=[0, 65535])  # ← FIXO DE 0 A 65535
         if save_dir:
-            html_path = os.path.join(save_dir, f'time_domain_ch{ch+1}.html')
+            html_path = os.path.join(save_dir, f'time_domain_{dt_str}_ch{ch+1}.html')
             pio.write_html(fig, html_path)
 
-def plot_frequency_domain(data, fs=256, save_dir=None):
+def plot_frequency_domain(data, fs=4000, save_dir=None, dt_str="", max_freq=50):
     for ch in range(data.shape[1]):
         n = data.shape[0]
         freqs = np.fft.rfftfreq(n, d=1/fs)
         fft_vals = np.abs(np.fft.rfft(data[:, ch]))
+        
+        # Limitar ao range 0-50Hz
+        mask = freqs <= max_freq
+        freqs = freqs[mask]
+        fft_vals = fft_vals[mask]
+        
         plt.figure(figsize=(10, 4))
         plt.plot(freqs, fft_vals, label=f'Channel {ch+1}')
         plt.title(f'EEG Signal Amplitude (Frequency Domain) - Channel {ch+1}')
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Amplitude')
+        plt.xlim(0, max_freq)  # Garantir limite de 50Hz
         plt.legend()
         plt.tight_layout()
         if save_dir:
-            png_path = os.path.join(save_dir, f'freq_domain_ch{ch+1}.png')
+            png_path = os.path.join(save_dir, f'freq_domain_{dt_str}_ch{ch+1}.png')
             plt.savefig(png_path)
         plt.close()
 
-        # Plotly HTML
+        # Plotly HTML também limitado
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=freqs, y=fft_vals, mode='lines', name=f'Channel {ch+1}'))
         fig.update_layout(title=f'EEG Signal Amplitude (Frequency Domain) - Channel {ch+1}',
-                          xaxis_title='Frequency (Hz)', yaxis_title='Amplitude')
+                          xaxis_title='Frequency (Hz)', yaxis_title='Amplitude',
+                          xaxis_range=[0, max_freq])  # Limitar eixo X
         if save_dir:
-            html_path = os.path.join(save_dir, f'freq_domain_ch{ch+1}.html')
+            html_path = os.path.join(save_dir, f'freq_domain_{dt_str}_ch{ch+1}.html')
             pio.write_html(fig, html_path)
 
-def plot_spectrogram(data, fs=256, save_dir=None):
+def plot_spectrogram(data, fs=256, save_dir=None, dt_str=""):
     from scipy.signal import spectrogram
     for ch in range(data.shape[1]):
         f, t, Sxx = spectrogram(data[:, ch], fs=fs, nperseg=256, noverlap=128)
@@ -81,7 +97,7 @@ def plot_spectrogram(data, fs=256, save_dir=None):
         plt.colorbar(label='Power/Frequency (dB/Hz)')
         plt.tight_layout()
         if save_dir:
-            png_path = os.path.join(save_dir, f'spectrogram_ch{ch+1}.png')
+            png_path = os.path.join(save_dir, f'spectrogram_{dt_str}_ch{ch+1}.png')
             plt.savefig(png_path)
         plt.close()
 
@@ -91,7 +107,7 @@ def plot_spectrogram(data, fs=256, save_dir=None):
         fig.update_layout(title=f'Channel {ch+1} Spectrogram',
                           xaxis_title='Time (s)', yaxis_title='Frequency (Hz)')
         if save_dir:
-            html_path = os.path.join(save_dir, f'spectrogram_ch{ch+1}.html')
+            html_path = os.path.join(save_dir, f'spectrogram_{dt_str}_ch{ch+1}.html')
             pio.write_html(fig, html_path)
 
 def highpass_filter(data, fs, cutoff=1.0, order=4):
@@ -129,34 +145,34 @@ def lowpass_filter(data, fs, cutoff=45.0, order=4):
     b, a = butter(order, normal_cutoff, btype='low', analog=False)
     return filtfilt(b, a, data, axis=0)
 
-
 def main():
     data = read_eeg_data(data_file)
-    fs = 256  # taxa de amostragem
-
-    # Mantém apenas os canais EEG (remove timestamp)
+    timestamps = data[:, 0]
     eeg_channels = data[:, 1:]
-
-    # Ignora os primeiros 10s
-    skip_seconds = 10
-    skip_samples = int(skip_seconds * fs)
-    if eeg_channels.shape[0] > skip_samples:
-        eeg_channels = eeg_channels[skip_samples:]
-        print(f"Skipped first {skip_samples} samples ({skip_seconds} seconds).")
-    else:
-        print("Warning: Not enough samples to skip early acquisitions.")
     print(f"Data shape: {eeg_channels.shape} (samples, channels)")
 
+    import re
+    match = re.search(r'eeg_data_(\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})', os.path.basename(data_file))
+    dt_str = match.group(1) if match else "unknown"
+
     # === Aplica o filtro passa-baixa em 45 Hz ===
-    eeg_filtered = lowpass_filter(eeg_channels, fs, cutoff=30.0, order=4)
+    fs = 4000  # taxa de amostragem
+    eeg_filtered = lowpass_filter(eeg_channels, fs, cutoff=100, order=4)
 
     save_dir = os.path.join(os.path.dirname(__file__), 'images')
     os.makedirs(save_dir, exist_ok=True)
 
-    # Plots no domínio do tempo e frequência do sinal filtrado
-    plot_time_domain(eeg_filtered, fs, save_dir=save_dir)
+    # Plots com os novos parâmetros
+    plot_time_domain(eeg_filtered, timestamps=timestamps, fs=fs, 
+                    save_dir=save_dir, dt_str=dt_str)
+    
     eeg_filtered_zero_mean = eeg_filtered - np.mean(eeg_filtered, axis=0)
-    plot_frequency_domain(eeg_filtered_zero_mean, fs, save_dir=save_dir)
+    
+    # FFT limitada a 50Hz
+    plot_frequency_domain(eeg_filtered_zero_mean, fs, 
+                         save_dir=save_dir, dt_str=dt_str, max_freq=80)
+    
+    plot_spectrogram(eeg_filtered_zero_mean, fs, save_dir=save_dir, dt_str=dt_str)
     print_top_frequencies(eeg_filtered_zero_mean, fs)
 
 

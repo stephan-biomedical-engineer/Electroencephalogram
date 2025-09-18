@@ -59,7 +59,8 @@ public:
 
 private slots:
     void on_connectButton_clicked();
-    void onEegPacketReady(quint32 timestamp, const QList<quint16>& channels);
+    // void onEegPacketReady(quint32 timestamp, const QList<quint16>& channels);
+    void onEegPacketReady(quint32 sample_count, const QList<quint16>& channels);
     void onPortStatusChanged(bool isOpen);
     
 private:

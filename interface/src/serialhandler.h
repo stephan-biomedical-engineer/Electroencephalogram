@@ -32,7 +32,8 @@ signals:
     // Sinal para informar o estado da conexão
     void portStatusChanged(bool isOpen);
     
-        void eegPacketReady(quint32 timestamp, const QList<quint16>& channels);
+    void eegPacketReady(quint32 timestamp, const QList<quint16>& channels);
+    // void onEegPacketReady(quint32 sample_count, const QList<quint16>& channels);
 
 private slots:
     // Slot interno para ser chamado quando há dados disponíveis na porta serial

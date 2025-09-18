@@ -93,7 +93,7 @@ void MainWindow::on_connectButton_clicked()
     if (m_serialHandler->isOpen()) {
         m_serialHandler->closeSerialPort();
     } else {
-        m_serialHandler->openSerialPort("/dev/ttyACM0", 115200);
+        m_serialHandler->openSerialPort("/dev/ttyACM0", 921600);
         QByteArray startCommand;
         startCommand.append(0x01); // CMD_START_ACQUISITION
         m_serialHandler->write(startCommand);
@@ -104,46 +104,55 @@ void MainWindow::onPortStatusChanged(bool isOpen) {
     m_connectButton->setText(isOpen ? "Parar" : "Conectar");
 }
 
-void MainWindow::onEegPacketReady(quint32 timestamp, const QList<quint16>& channels)
-{
-    double timestamp_double = static_cast<double>(timestamp);
-    int windowSize = 256; // Reduced window size for a smaller time axis
 
-    m_timestamps.append(timestamp_double);
+void MainWindow::onEegPacketReady(quint32 sample_count, const QList<quint16>& channels)
+{
+    // --- Conversão para tempo real ---
+    const double SAMPLE_RATE_HZ = 4000.0; // 4kHz total
+    double time_seconds = sample_count / SAMPLE_RATE_HZ;
+    
+    int windowSize = 100;
+
+    m_timestamps.append(time_seconds);
     for (int i = 0; i < 4; ++i)
         m_channelData[i].append(static_cast<double>(channels[i]));
 
+    // Manter apenas a janela de tempo desejada
     if (m_timestamps.size() > windowSize) {
         m_timestamps.remove(0, m_timestamps.size() - windowSize);
         for (int i = 0; i < 4; ++i)
             m_channelData[i].remove(0, m_channelData[i].size() - windowSize);
     }
 
-    // Atualizar os gráficos usando m_graphs
+    // Atualizar gráficos
     for (int i = 0; i < 4; ++i) {
         m_graphs[i]->setData(m_timestamps, m_channelData[i]);
+        
+        // Auto-scale no eixo Y se desejar
         // m_graphs[i]->rescaleValueAxis(true);
-
-        // Atualiza o eixo X de cada subplot
-        QCPAxis *xAxis = m_graphs[i]->keyAxis();
-        if (!m_timestamps.isEmpty())
-            xAxis->setRange(m_timestamps.first(), m_timestamps.last());
-
-        // Define o range do eixo Y entre 0 e 65535
+        
+        // Range fixo no Y (0-65535 para ADC de 16 bits)
         QCPAxis *yAxis = m_graphs[i]->valueAxis();
-        yAxis->setRange(0, 65535);
+        //yAxis->setRange(0, 65535);
+        
+        // Range no eixo X para mostrar a janela de tempo
+        if (!m_timestamps.isEmpty()) {
+            QCPAxis *xAxis = m_graphs[i]->keyAxis();
+            xAxis->setRange(m_timestamps.first(), m_timestamps.last());
+        }
     }
 
     m_customPlot->replot();
 
-    // --- Save data to file ---
+    // --- Salvar dados no arquivo ---
     if (m_dataFile.isOpen() && channels.size() >= 4) {
-        m_dataStream << timestamp << "\t"
+        m_dataStream << time_seconds << "\t"  // Tempo em segundos
                      << channels[0] << "\t"
                      << channels[1] << "\t"
                      << channels[2] << "\t"
                      << channels[3] << "\n";
-        m_dataStream.flush(); // ensure data is written
+        m_dataStream.flush();
     }
+    
+    qDebug() << "Tempo:" << time_seconds << "s, Amostra:" << sample_count;
 }
-

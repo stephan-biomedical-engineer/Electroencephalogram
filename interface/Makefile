@@ -382,7 +382,6 @@ build/moc/moc_mainwindow.cpp: src/mainwindow.h \
 		src/mh.h \
 		src/cobs.h \
 		lib/QCustomPlot/qcustomplot.h \
-		lib/kissfft/kiss_fft.h \
 		build/moc/moc_predefs.h \
 		/usr/lib/qt6/libexec/moc
 	/usr/lib/qt6/libexec/moc $(DEFINES) --include /home/stephan/Documents/IB1/interface/build/moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -I/home/stephan/Documents/IB1/interface -I/home/stephan/Documents/IB1/interface/lib/kissfft -I/usr/include/x86_64-linux-gnu/qt6 -I/usr/include/x86_64-linux-gnu/qt6/QtPrintSupport -I/usr/include/x86_64-linux-gnu/qt6/QtWidgets -I/usr/include/x86_64-linux-gnu/qt6/QtGui -I/usr/include/x86_64-linux-gnu/qt6/QtSerialPort -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include src/mainwindow.h -o build/moc/moc_mainwindow.cpp
@@ -424,16 +423,14 @@ build/obj/main.o: src/main.cpp src/mainwindow.h \
 		src/serialhandler.h \
 		src/mh.h \
 		src/cobs.h \
-		lib/QCustomPlot/qcustomplot.h \
-		lib/kissfft/kiss_fft.h
+		lib/QCustomPlot/qcustomplot.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/obj/main.o src/main.cpp
 
 build/obj/mainwindow.o: src/mainwindow.cpp src/mainwindow.h \
 		src/serialhandler.h \
 		src/mh.h \
 		src/cobs.h \
-		lib/QCustomPlot/qcustomplot.h \
-		lib/kissfft/kiss_fft.h
+		lib/QCustomPlot/qcustomplot.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/obj/mainwindow.o src/mainwindow.cpp
 
 build/obj/serialhandler.o: src/serialhandler.cpp src/serialhandler.h \
