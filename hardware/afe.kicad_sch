@@ -5274,9 +5274,9 @@
 		)
 		(uuid "6faddfd9-db3e-4a99-8c6b-969bf7e77438")
 	)
-	(text "Gain = 20\nRG = 100k/(Gain - 1) = 5.263k"
+	(text "Gain = 20\nRG = 100k/(Gain - 1) = 2.04k"
 		(exclude_from_sim no)
-		(at 172.72 132.334 0)
+		(at 173.482 127.762 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5315,16 +5315,6 @@
 			)
 		)
 		(uuid "80dfd868-59c9-40b0-a972-891e1461de63")
-	)
-	(text "Gain = 10\nRG = 100k/(Gain - 1) = 11.111k"
-		(exclude_from_sim no)
-		(at 172.466 127.508 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "87f76b54-c9d0-4ce5-bc90-e6e2a5749e2c")
 	)
 	(text "fc = 50Hz"
 		(exclude_from_sim no)
