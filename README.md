@@ -64,7 +64,7 @@ EEG signals are amplified \~**5000x** and filtered in a 3-stage analog pipeline:
 
 On the host side:
 
-* A **Node.js** + **WebSocket/MQTT** interface provides live graphical feedback of EEG signals.
+* A **Qt** interface provides live graphical feedback of EEG signals.
 * Visualizes brain wave patterns and band activity in real time.
 
 ---
@@ -77,7 +77,7 @@ On the host side:
 | Analog Circuitry | INA333, OPA333, RC Filters                 |
 | Wireless         | ESP32-C6-MINI-1H4, ESP-IDF, FreeRTOS       |
 | Protocols        | UART, MQTT, Wi-Fi                          |
-| Host Interface   | Node.js, JavaScript, HTML5, WebSocket/MQTT |
+| Host Interface   | Qt, C++, HTML5, WebSocket/MQTT |
 
 ---
 
@@ -92,4 +92,5 @@ On the host side:
 ---
 
 ## 👨‍🔬 Authors & Acknowledgments
+
 
