@@ -23,14 +23,14 @@ This is a full-stack biomedical system, integrating **analog signal conditioning
 ### 🧩 Microcontroller Core
 
 * **STM32H730VBT** SoC
-* Features a **16-bit Delta-Sigma ADC** up to **3.6 MSPS**, ideal for high-resolution EEG data acquisition.
+* Features a **16-bit SAR ADC** up to **3.6 MSPS**, ideal for high-resolution EEG data acquisition.
 
 ### 🔌 Analog Front-End (AFE)
 
-EEG signals are amplified \~**5000x** and filtered in a 3-stage analog pipeline:
+EEG signals are amplified \~**12000x** and filtered in a 3-stage analog pipeline:
 
 1. **INA333 Instrumentation Amplifier** – 20x gain + initial passive filtering
-2. **OPA333 Operational Amplifier** – 250x gain
+2. **OPA333 Operational Amplifier** – 600x gain
 3. **6th-Order Passive Bandpass Filter** – 0.5 Hz (HP) to 45 Hz (LP)
 
 ### 📡 Communication & Storage
@@ -45,7 +45,7 @@ EEG signals are amplified \~**5000x** and filtered in a 3-stage analog pipeline:
 ### STM32H7 Side (Signal Acquisition)
 
 * **DFSDM Peripheral** used for enhanced digital filtering
-* **Oversampling & Bit Shifting** increase ADC resolution to up to **19 bits**
+* **Oversampling & Bit Shifting** increase ADC ENOB
 * Implements **Wavelet Transform** for real-time brain wave classification
 
 ### ESP32 Side (Wireless Stack)
@@ -92,5 +92,8 @@ On the host side:
 ---
 
 ## 👨‍🔬 Authors & Acknowledgments
+Stephan Costa Barros 
+Electrical Engineering Department - Federal University of Uberlandia - BR
+
 
 
