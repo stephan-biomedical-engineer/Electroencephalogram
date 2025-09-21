@@ -92,8 +92,9 @@ On the host side:
 ---
 
 ## 👨‍🔬 Authors & Acknowledgments
-Stephan Costa Barros\n 
+Stephan Costa Barros - 
 Electrical Engineering Department - Federal University of Uberlandia - BR
+
 
 
 
