@@ -2,26 +2,6 @@
 
 > A wearable EEG system for real-time brain activity monitoring, designed with embedded systems and IoT principles.
 
-<p align="center">
-  <img src="images/EEG_PCB_Diagram.png" width="500" alt="EEG Hardware Prototype"/>
-  <br>
-  <b>EEG Hardware Prototype</b>
-</p>
-
-### Real-Time Interface (Qt)
-<p align="center">
-  <img src="images/EEG_Wave.png" width="600" alt="Real-Time EEG Interface in Qt"/>
-  <br>
-  <b>Real-Time EEG Interface in Qt</b>
-</p>
-
-### Setup
-<p align="center">
-  <img src="images/Setup_2.jpg" width="600" alt="Physical Setup"/>
-  <br>
-  <b>Physical Setup</b>
-</p>
-
 ---
 
 ## 📚 Project Overview
@@ -35,6 +15,25 @@ This project presents a **wearable Electroencephalogram (EEG) device** developed
 * **Gamma (γ):** 30 – 100 Hz
 
 This is a full-stack biomedical system, integrating **analog signal conditioning**, **high-resolution digital conversion**, and **wireless data transmission** for real-time EEG visualization.
+
+<p align="center">
+  <img src="images/EEG_PCB_Diagram.png" width="500" alt="EEG Hardware Prototype"/>
+  <br>
+  <b>EEG Hardware Prototype</b>
+</p>
+
+<p align="center">
+  <img src="images/EEG_Wave.png" width="600" alt="Real-Time EEG Interface in Qt"/>
+  <br>
+  <b>Real-Time EEG Interface in Qt</b>
+</p>
+
+<p align="center">
+  <img src="images/Setup_2.jpg" width="600" alt="Physical Setup"/>
+  <br>
+  <b>Physical Setup</b>
+</p>
+
 
 ---
 
@@ -114,6 +113,7 @@ On the host side:
 ## 👨‍🔬 Authors & Acknowledgments
 Stephan Costa Barros - 
 Electrical Engineering Department – Federal University of Uberlândia (UFU), Brazil
+
 
 
 
