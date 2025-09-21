@@ -2,6 +2,21 @@
 
 > A wearable EEG system for real-time brain activity monitoring, designed with embedded systems and IoT principles.
 
+### Hardware Prototype
+<p align="center">
+  <img src="images/EEG_PCB_Diagram.png" width="500" alt="EEG Hardware Prototype"/>
+</p>
+
+### Real-Time Interface (Qt)
+<p align="center">
+  <img src="images/EEG_Wave.png" width="600" alt="EEG Interface in Qt"/>
+</p>
+
+### Setup
+<p align="center">
+  <img src="images/Setup_2.jpg" width="600" alt="Physical Setup"/>
+</p>
+
 ---
 
 ## 📚 Project Overview
@@ -94,6 +109,7 @@ On the host side:
 ## 👨‍🔬 Authors & Acknowledgments
 Stephan Costa Barros - 
 Electrical Engineering Department - Federal University of Uberlandia - BR
+
 
 
 
