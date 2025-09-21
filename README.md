@@ -115,6 +115,14 @@ Stephan Costa Barros -
 Electrical Engineering Department – Federal University of Uberlândia (UFU), Brazil
 
 
+Marcelo Barros de Almeida - 
+Electrical Engineering Department – Federal University of Uberlândia (UFU), Brazil
+
+Alcimar Barbosa Soares - 
+Electrical Engineering Department – Federal University of Uberlândia (UFU), Brazil
+
+
+
 
 
 
