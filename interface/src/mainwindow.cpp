@@ -133,7 +133,7 @@ void MainWindow::onEegPacketReady(quint32 sample_count, const QList<quint16>& ch
         
         // Range fixo no Y (0-65535 para ADC de 16 bits)
         QCPAxis *yAxis = m_graphs[i]->valueAxis();
-        //yAxis->setRange(0, 65535);
+        yAxis->setRange(0, 65535);
         
         // Range no eixo X para mostrar a janela de tempo
         if (!m_timestamps.isEmpty()) {
