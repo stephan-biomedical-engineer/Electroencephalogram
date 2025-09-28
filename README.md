@@ -94,7 +94,7 @@ On the host side:
 | ---------------- | ------------------------------------------ |
 | Microcontroller  | STM32H730VBT, STM32CubeIDE                 |
 | Analog Circuitry | INA333, OPA333, RC Filters                 |
-| Wireless         | ESP32-C6-MINI-1H4, ESP-IDF, FreeRTOS       |
+| Wireless         | ESP32-C6-MINI-1H4, ESP-IDF, FreeRTOS       | (Not yet implemented)
 | Protocols        | UART, MQTT, Wi-Fi                          |
 | Host Interface   | Qt, C++, HTML5, WebSocket/MQTT |
 
@@ -120,6 +120,7 @@ Electrical Engineering Department – Federal University of Uberlândia (UFU), B
 
 Alcimar Barbosa Soares - 
 Electrical Engineering Department – Federal University of Uberlândia (UFU), Brazil
+
 
 
 
